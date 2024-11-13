@@ -44,6 +44,26 @@ function checkSpot()
     plantSapling()
 end
 
+-- Function to move forward, checking for leaves and removing them
+function moveForwardWithLeafCheck()
+    -- Check if there's a block in front of the turtle
+    while turtle.detect() do
+        -- If the block is a leaf, dig it
+        local success, block = turtle.inspect()
+        if success and block.name == "minecraft:leaves" then
+            turtle.dig()
+            print("Breaking leaves...")
+        else
+            -- If it's not a leaf, stop and exit the loop
+            print("Obstacle detected, not a leaf.")
+            return false
+        end
+    end
+    -- Move forward after the leaves are cleared
+    turtle.forward()
+    return true
+end
+
 -- Function to move to the next row
 function nextRow(direction)
     if direction % 2 == 0 then
@@ -61,19 +81,12 @@ end
 function returnToStart()
     print("Returning to starting position...")
 
-    -- Determine if the turtle is at an even or odd row
-    if (width % 2 == 1) then
-        turtle.turnRight()
-    else
-        turtle.turnLeft()
-    end
-
-    -- Move back along the width of the farm
+    -- Move back along the width of the farm (6 columns)
     for i = 1, width - 1 do
         turtle.forward()
     end
 
-    -- Turn and move back along the length of the farm
+    -- Turn to move back along the length of the farm (6 rows)
     turtle.turnRight()
     for j = 1, length - 1 do
         turtle.forward()
@@ -113,12 +126,12 @@ function treeFarmLoop()
         refuel()
 
         -- Start at (1, 1) instead of (0, 0)
-        turtle.forward()
+        moveForwardWithLeafCheck()
 
         for i = 1, width do
             for j = 1, length - 1 do
                 checkSpot()
-                turtle.forward()
+                moveForwardWithLeafCheck()
             end
             checkSpot()
             if i < width then
