@@ -36,32 +36,43 @@ function chopTree()
     end
 end
 
--- Function to harvest a single spot
-function checkSpot()
-    if turtle.detect() then
-        chopTree()
-    end
-    plantSapling()
-end
-
--- Function to move forward, checking for leaves and removing them
-function moveForwardWithLeafCheck()
-    -- Check if there's a block in front of the turtle
-    while turtle.detect() do
-        -- If the block is a leaf, dig it
-        local success, block = turtle.inspect()
-        if success and block.name == "minecraft:leaves" then
-            turtle.dig()
-            print("Breaking leaves...")
+-- Function to mine the full tree (all logs)
+function mineTree()
+    -- Mine upwards from the current position until no more logs are detected
+    while turtle.detectUp() do
+        local success, block = turtle.inspectUp()
+        if success and (block.name == "minecraft:log" or block.name == "minecraft:log2") then
+            turtle.digUp()
+            turtle.up()
         else
-            -- If it's not a leaf, stop and exit the loop
-            print("Obstacle detected, not a leaf.")
-            return false
+            break
         end
     end
-    -- Move forward after the leaves are cleared
+    
+    -- Descend back down after mining logs
+    while not turtle.detectDown() do
+        turtle.down()
+    end
+end
+
+-- Function to move forward while checking for trees and leaves
+function moveForwardWithLeafCheck()
+    local success, block = turtle.inspect()  -- Inspect the block in front of the turtle
+
+    if success then
+        -- If the block is a tree (log), mine the entire tree
+        if block.name == "minecraft:log" or block.name == "minecraft:log2" then
+            print("Tree detected, mining entire tree...")
+            mineTree()  -- Mine the full tree (logs)
+        -- If the block is a leaf, break it
+        elseif block.name == "minecraft:leaves" or block.name == "minecraft:leaves2" then
+            print("Leaf detected, breaking leaf...")
+            turtle.dig()  -- Break the leaf
+        end
+    end
+
+    -- Move forward after checking the block
     turtle.forward()
-    return true
 end
 
 -- Function to move to the next row
@@ -127,10 +138,8 @@ function treeFarmLoop()
 
         for i = 1, width do
             for j = 1, length - 1 do
-                checkSpot()
                 moveForwardWithLeafCheck()
             end
-            checkSpot()
             if i < width then
                 nextRow(direction)
                 direction = direction + 1
