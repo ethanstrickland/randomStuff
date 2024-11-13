@@ -4,10 +4,10 @@
 local width = 6
 local length = 6
 
--- Define slot indexes for saplings and fuel
+-- Define slot indexes for saplings, fuel, and axe
 local saplingSlot = 1
 local fuelSlot = 2
-local chestSlot = 16 -- Slot to store collected items temporarily before dumping
+local axeSlot = 3 -- Define the slot dedicated to the axe
 
 -- Function to check and refuel the turtle
 function refuel()
@@ -57,23 +57,48 @@ function nextRow(direction)
     end
 end
 
--- Function to deposit items into a chest (except fuel, saplings, and axe)
+-- Function to return the turtle to the starting position
+function returnToStart()
+    print("Returning to starting position...")
+
+    -- Determine if the turtle is at an even or odd row
+    if (width % 2 == 1) then
+        turtle.turnRight()
+    else
+        turtle.turnLeft()
+    end
+
+    -- Move back along the width of the farm
+    for i = 1, width - 1 do
+        turtle.forward()
+    end
+
+    -- Turn and move back along the length of the farm
+    turtle.turnRight()
+    for j = 1, length - 1 do
+        turtle.forward()
+    end
+
+    -- Turn to face the original direction
+    turtle.turnRight()
+end
+
+-- Function to deposit items into the chest (below starting point)
 function depositItems()
     print("Depositing items into chest...")
 
     for slot = 1, 16 do
-        if slot ~= saplingSlot and slot ~= fuelSlot then
+        if slot ~= saplingSlot and slot ~= fuelSlot and slot ~= axeSlot then
             turtle.select(slot)
             local item = turtle.getItemDetail()
             if item then
                 -- Check if it's saplings, skip if we have 1 stack already
                 if item.name == "minecraft:sapling" then
-                    -- Move extra saplings to the chest
                     if turtle.getItemCount(saplingSlot) >= 64 then
                         turtle.dropDown()
                     end
                 else
-                    -- Dump everything else
+                    -- Dump everything else except axe
                     turtle.dropDown()
                 end
             end
@@ -86,6 +111,10 @@ function treeFarmLoop()
     local direction = 0
     while true do
         refuel()
+
+        -- Start at (1, 1) instead of (0, 0)
+        turtle.forward()
+
         for i = 1, width do
             for j = 1, length - 1 do
                 checkSpot()
@@ -97,24 +126,16 @@ function treeFarmLoop()
                 direction = direction + 1
             end
         end
+
         -- Return to starting point
-        if width % 2 == 1 then
-            turtle.turnRight()
-        else
-            turtle.turnLeft()
-        end
-        for k = 1, width - 1 do
-            turtle.forward()
-        end
-        turtle.turnRight()
-        for l = 1, length - 1 do
-            turtle.forward()
-        end
-        turtle.turnRight()
-        
-        -- Dump items in chest after a cycle
+        returnToStart()
+
+        -- Dump items in chest after returning to starting point
         depositItems()
-        
+
+        -- Move back to starting position
+        turtle.back() 
+
         -- Wait for trees to grow
         print("Waiting for trees to grow...")
         os.sleep(300) -- Wait for 5 minutes before checking again
