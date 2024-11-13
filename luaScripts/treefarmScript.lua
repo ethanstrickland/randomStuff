@@ -23,19 +23,6 @@ function plantSapling()
     turtle.placeDown()
 end
 
--- Function to chop down the tree
-function chopTree()
-    while turtle.detectUp() do
-        turtle.digUp()
-        turtle.up()
-    end
-
-    -- Descend back down
-    while not turtle.detectDown() do
-        turtle.down()
-    end
-end
-
 -- Function to mine the full tree (all logs)
 function mineTree()
     -- First, mine the block in front of the turtle to get to the center of the tree
