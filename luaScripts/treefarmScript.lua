@@ -28,6 +28,7 @@ function mineTree()
     -- First, mine the block in front of the turtle to get to the center of the tree
     turtle.dig()
     turtle.forward()
+    turtle.digDown()
 
     -- Mine upwards (all logs above the turtle)
     while turtle.detectUp() do
@@ -51,6 +52,9 @@ function mineTree()
         if success and (block.name == "minecraft:log" or block.name == "minecraft:log2") then
             turtle.dig()  -- Mine the log in front of the turtle
             turtle.forward()
+            turtle.digDown()
+            turtle.digUp()
+            turtle.up()
         else
             break  -- Stop if it's not a log
         end
