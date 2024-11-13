@@ -45,20 +45,8 @@ function mineTree()
     while not turtle.detectDown() do
         turtle.down()
     end
+    turtle.up()
     
-    -- Mine any remaining logs in front of the turtle
-    while turtle.detect() do
-        local success, block = turtle.inspect()
-        if success and (block.name == "minecraft:log" or block.name == "minecraft:log2") then
-            turtle.dig()  -- Mine the log in front of the turtle
-            turtle.forward()
-            turtle.digDown()
-            turtle.digUp()
-            turtle.up()
-        else
-            break  -- Stop if it's not a log
-        end
-    end
 end
 
 -- Function to move forward while checking for trees and leaves
