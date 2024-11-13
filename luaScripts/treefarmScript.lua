@@ -138,11 +138,13 @@ function treeFarmLoop()
 
         -- Start at (1, 1) instead of (0, 0)
         moveForwardWithLeafCheck()
+        checkAndPlantSapling()
 
         for i = 1, width do
             for j = 1, length - 1 do
                 moveForwardWithLeafCheck()
                 checkAndPlantSapling()
+                refuel()
             end
             if i < width then
                 nextRow(direction)
