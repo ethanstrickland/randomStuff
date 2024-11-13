@@ -45,11 +45,10 @@ function mineTree()
     while not turtle.detectDown() do
         turtle.down()
     end
-    turtle.up()
-    
+    turtle.up()  -- Go back to 1 block above the ground after mining
 end
 
--- Function to move forward while checking for trees and leaves
+-- Function to check the space in front of the turtle and mine as needed
 function moveForwardWithLeafCheck()
     local success, block = turtle.inspect()  -- Inspect the block in front of the turtle
 
@@ -67,6 +66,16 @@ function moveForwardWithLeafCheck()
 
     -- Move forward after checking the block
     turtle.forward()
+end
+
+-- Function to check and plant a sapling if there isn't one already
+function checkAndPlantSapling()
+    turtle.select(saplingSlot)
+    local success, block = turtle.inspectDown()
+    if not success or (block.name ~= "minecraft:sapling") then
+        print("No sapling detected, planting one...")
+        plantSapling()
+    end
 end
 
 -- Function to move to the next row
