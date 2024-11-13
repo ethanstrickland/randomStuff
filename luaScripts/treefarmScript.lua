@@ -130,6 +130,7 @@ function depositItems()
     end
 end
 
+
 -- Main loop to manage the tree farm
 function treeFarmLoop()
     local direction = 0
