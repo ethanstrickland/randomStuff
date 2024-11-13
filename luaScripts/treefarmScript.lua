@@ -7,7 +7,6 @@ local length = 6
 -- Define slot indexes for saplings, fuel, and axe
 local saplingSlot = 1
 local fuelSlot = 2
-local axeSlot = 3 -- Define the slot dedicated to the axe
 
 -- Function to check and refuel the turtle
 function refuel()
@@ -112,7 +111,7 @@ function depositItems()
     print("Depositing items into chest...")
 
     for slot = 1, 16 do
-        if slot ~= saplingSlot and slot ~= fuelSlot and slot ~= axeSlot then
+        if slot ~= saplingSlot and slot ~= fuelSlot then
             turtle.select(slot)
             local item = turtle.getItemDetail()
             if item then
