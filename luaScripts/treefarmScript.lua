@@ -38,20 +38,35 @@ end
 
 -- Function to mine the full tree (all logs)
 function mineTree()
-    -- Mine upwards from the current position until no more logs are detected
+    -- First, mine the block in front of the turtle to get to the center of the tree
+    turtle.dig()
+    turtle.forward()
+
+    -- Mine upwards (all logs above the turtle)
     while turtle.detectUp() do
         local success, block = turtle.inspectUp()
         if success and (block.name == "minecraft:log" or block.name == "minecraft:log2") then
             turtle.digUp()
             turtle.up()
         else
-            break
+            break  -- If it's not a log, stop mining upwards
         end
     end
     
-    -- Descend back down after mining logs
+    -- After mining upwards, descend back down
     while not turtle.detectDown() do
         turtle.down()
+    end
+    
+    -- Mine any remaining logs in front of the turtle
+    while turtle.detect() do
+        local success, block = turtle.inspect()
+        if success and (block.name == "minecraft:log" or block.name == "minecraft:log2") then
+            turtle.dig()  -- Mine the log in front of the turtle
+            turtle.forward()
+        else
+            break  -- Stop if it's not a log
+        end
     end
 end
 
