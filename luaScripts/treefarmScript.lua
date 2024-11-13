@@ -82,11 +82,11 @@ end
 function nextRow(direction)
     if direction % 2 == 0 then
         turtle.turnRight()
-        turtle.forward()
+        moveForwardWithLeafCheck()
         turtle.turnRight()
     else
         turtle.turnLeft()
-        turtle.forward()
+        moveForwardWithLeafCheck()
         turtle.turnLeft()
     end
 end
@@ -95,12 +95,12 @@ end
 function returnToStart()
     print("Returning to starting position...")
 
-    turtle.forward()
+    moveForwardWithLeafCheck()
 
     -- Turn to move back along the length of the farm (6 rows)
     turtle.turnRight()
     for j = 1, length - 1 do
-        turtle.forward()
+        moveForwardWithLeafCheck()
     end
 
     -- Turn to face the original direction
@@ -142,6 +142,7 @@ function treeFarmLoop()
         for i = 1, width do
             for j = 1, length - 1 do
                 moveForwardWithLeafCheck()
+                checkAndPlantSapling()
             end
             if i < width then
                 nextRow(direction)
