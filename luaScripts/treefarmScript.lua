@@ -81,10 +81,7 @@ end
 function returnToStart()
     print("Returning to starting position...")
 
-    -- Move back along the width of the farm (6 columns)
-    for i = 1, width - 1 do
-        turtle.forward()
-    end
+    turtle.forward()
 
     -- Turn to move back along the length of the farm (6 rows)
     turtle.turnRight()
