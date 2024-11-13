@@ -1,12 +1,13 @@
 -- Tree Farm Program for ComputerCraft Turtle
 
 -- Define area size (width and length of the farm)
-local width = 5
-local length = 5
+local width = 6
+local length = 6
 
 -- Define slot indexes for saplings and fuel
 local saplingSlot = 1
 local fuelSlot = 2
+local chestSlot = 16 -- Slot to store collected items temporarily before dumping
 
 -- Function to check and refuel the turtle
 function refuel()
@@ -56,6 +57,30 @@ function nextRow(direction)
     end
 end
 
+-- Function to deposit items into a chest (except fuel, saplings, and axe)
+function depositItems()
+    print("Depositing items into chest...")
+
+    for slot = 1, 16 do
+        if slot ~= saplingSlot and slot ~= fuelSlot then
+            turtle.select(slot)
+            local item = turtle.getItemDetail()
+            if item then
+                -- Check if it's saplings, skip if we have 1 stack already
+                if item.name == "minecraft:sapling" then
+                    -- Move extra saplings to the chest
+                    if turtle.getItemCount(saplingSlot) >= 64 then
+                        turtle.dropDown()
+                    end
+                else
+                    -- Dump everything else
+                    turtle.dropDown()
+                end
+            end
+        end
+    end
+end
+
 -- Main loop to manage the tree farm
 function treeFarmLoop()
     local direction = 0
@@ -86,6 +111,9 @@ function treeFarmLoop()
             turtle.forward()
         end
         turtle.turnRight()
+        
+        -- Dump items in chest after a cycle
+        depositItems()
         
         -- Wait for trees to grow
         print("Waiting for trees to grow...")
